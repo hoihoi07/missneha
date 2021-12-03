@@ -128,12 +128,14 @@ class GoogleDriveHelper:
         try:
             res = self.__service.files().delete(fileId=file_id, supportsTeamDrives=IS_TEAM_DRIVE).execute()
             msg = "Successfully deleted"
+            LOGGER.info(f"Delete Result: {msg}")
         except HttpError as err:
             LOGGER.error(str(err))
             if "File not found" in str(err):
                 msg = "No such file exist"
             else:
-                msg = "Something went wrong check log"
+                msg = str(err)
+            LOGGER.error(f"Delete Result: {msg}")
         finally:
             return msg
 
@@ -269,8 +271,7 @@ class GoogleDriveHelper:
                 link = f"https://drive.google.com/folderview?id={dir_id}"
                 if self.is_cancelled:
                     LOGGER.info("Deleting uploaded data from Drive...")
-                    msg = self.deletefile(link)
-                    LOGGER.info(f"{msg}")
+                    self.deletefile(link)
                     return
                 LOGGER.info("Uploaded To G-Drive: " + file_name)
             except Exception as e:
@@ -373,8 +374,7 @@ class GoogleDriveHelper:
                 durl = self.__G_DRIVE_DIR_BASE_DOWNLOAD_URL.format(dir_id)
                 if self.is_cancelled:
                     LOGGER.info("Deleting cloned data from Drive...")
-                    msg = self.deletefile(durl)
-                    LOGGER.info(f"{msg}")
+                    self.deletefile(durl)
                     return "your clone has been stopped and cloned data has been deleted!", "cancelled"
                 msg += f'<b>🗂️ Fɪʟᴇɴᴀᴍᴇ : </b><code>{meta.get("name")}</code>\n<b>📦 Sɪᴢᴇ : </b><code>{get_readable_file_size(self.transferred_size)}</code>'
                 msg += f'\n<b>⚙️ Tʏᴘᴇ : </b><code>Folder</code>'
