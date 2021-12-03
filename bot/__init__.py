@@ -186,6 +186,14 @@ except:
 
     pass
 
+try:
+    PHPSESSID = getConfig('PHPSESSID')
+    CRYPT = getConfig('CRYPT')
+    if len(PHPSESSID) == 0 or len(CRYPT) == 0:
+        raise KeyError
+except KeyError:
+    PHPSESSID = None
+    CRYPT = None
 
 try:
     BOT_TOKEN = getConfig('BOT_TOKEN')
